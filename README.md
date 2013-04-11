@@ -20,7 +20,7 @@ Wheelhouse is a collection of packages that are built on top of the excellent fl
 ## Packages
 * [wheelhouse-couch](https://github.com/joeybaker/wheelhouse-couch) Override `Backbone.sync` on the server. Uses CouchDB as it's database.
 * [wheelhouse-handlebars](https://github.com/joeybaker/wheelhouse-handlebars) Use handlebars for client and server templates
-* [wheelhouse-route](https://github.com/joeybaker/wheelhouse-route) _WIP_
+* [wheelhouse-router](https://github.com/joeybaker/wheelhouse-router)
 
 ## Usage
 ```js

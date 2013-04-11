@@ -1,0 +1,11 @@
+{
+  "/api/rivers": {
+      "get": "api/rivers"
+      , "post": "api/rivers"
+    }
+  , "/api/rivers/*": {
+      "get": "api/rivers"
+      , "put": "api/rivers"
+      , "delete": "api/rivers"
+    }
+}

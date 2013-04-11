@@ -1,0 +1,23 @@
+{
+  "port": 8000,
+  "assets": {
+    "js": "assets/js"
+  }
+  , "paths": {
+    "controllers": "app/controllers"
+    , "templates": "app/templates"
+    , "collections": "app/collections"
+    , "models": "app/models"
+    , "mutualRoutes": "app/routes.json"
+    , "serverRoutes": "app/serverRoutes.json"
+  }
+  , "renders": {
+    "templates": "assets/_js/templates"
+    , "js": "assets/_js"
+  }
+  , "database": {
+    "host": "localhost"
+    , "port": 5984
+    , "name": "wheelhouse"
+  }
+}

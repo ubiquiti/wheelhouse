@@ -1,3 +1,2 @@
 'use strict';
-
-console.log('wheelhouse')
+require('./app/app')

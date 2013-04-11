@@ -1,0 +1,74 @@
+// $B a s e  T y p e
+// --------------------------------------------------------------------------
+
+@weight: normal;
+@line-height: 1.65;
+@font-size: 112.5; // percentage value (16 * 112.5% = 18px)
+@font-base: @font-size-base * (@font-size/100); // converts our percentage to a pixel value
+@measure: @font-base * @line-height;
+@font-family: serif;
+@font-family-sans: sans-serif;
+
+//the serif boolean var can be redeclared from another stylesheet. However
+//the var must be placed after your @import "typeplate.less";
+@serif-boolean: true;
+
+
+// $C o l o r
+// --------------------------------------------------------------------------
+
+@body-copy-color: @text-color;
+@heading-color: @grayDarker;
+
+
+// $A M P E R S A N D  @font-face
+// --------------------------------------------------------------------------
+
+@amp-fontface-name: Ampersand;
+@amp-fontface-source: local("Georgia"), local("Garamond"), local("Palatino"), local("Book Antiqua");
+@amp-fontface-fallback: local("Georgia");
+
+
+// $A M P E R S A N D  e l e m e n t
+// --------------------------------------------------------------------------
+
+// Allows for our ampersand element to have differing
+// font-family from the ampersand unicode font-family.
+@amp-font-family: Verdana, sans-serif;
+
+
+// $T y p e  S c a l e
+// --------------------------------------------------------------------------
+
+@tera: 117;   //  117 = 18 × 6.5
+@giga: 90;    //  90  = 18 × 5
+@mega: 72;    //  72  = 18 × 4
+@alpha: 60;   //  60  = 18 × 3.3333
+@beta: 48;    //  48  = 18 × 2.6667
+@gamma: 36;   //  36  = 18 × 2
+@delta: 24;   //  24  = 18 × 1.3333
+@epsilon: 21; //  21  = 18 × 1.1667
+@zeta: 18;    //  18  = 18 × 1
+
+
+// $T y p e  S c a l e  U n i t
+// --------------------------------------------------------------------------
+
+@type-scale-unit-value: rem;
+
+
+// $T e x t  I n d e n t a t i o n
+// --------------------------------------------------------------------------
+
+@indent-val: 1.5em;
+
+
+// $S t a t s  T a b
+// --------------------------------------------------------------------------
+
+@stats-font-size: 1.5rem;
+@stats-list-margin: 0 0.625rem 0 0;
+@stats-list-padding: 0 0.625rem 0 0;
+@stats-item-font-size: 0.875rem;
+@stats-item-margin: 0.125rem 0 0 0;
+@stats-border-style: 0.125rem solid #ccc;
