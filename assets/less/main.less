@@ -1,4 +1,5 @@
 // Core variables and mixins
+@import "../components/bootstrap/less/variables.less";
 @import "variables.less";
 @import "../components/bootstrap/less/mixins.less";
 
@@ -22,7 +23,8 @@
 
 // Components: common
 @import "../components/bootstrap/less/component-animations.less";
-// TODO: fontawesome
+@import "../components/font-awesome/less/font-awesome.less";
+@FontAwesomePath:   "../components/font-awesome/font";
 // @import "../components/bootstrap/less/glyphicons.less";
 @import "../components/bootstrap/less/dropdowns.less";
 @import "../components/bootstrap/less/list-group.less";
@@ -53,10 +55,23 @@
 @import "../components/bootstrap/less/carousel.less";
 @import "../components/bootstrap/less/jumbotron.less";
 
+// custom mixins
+@import "mixins/flex.less";
+@import "../components/Flexbox.less/flexbox.less";
+// animate doesn't seem to work with ajax elements?
+// @import "../components/animate.less/animate.less";
+@import "mixins.less";
+@import "utilities.less";
 
 // custom
-@import "custom.less";
+@import "library.less";
+@import "header.less";
+@import "wisps.less";
 
 // must be last
 @import "../components/bootstrap/less/utilities.less";
 @import "../components/bootstrap/less/responsive-utilities.less";
+
+// overrides
+@import "override/form.less";
+
