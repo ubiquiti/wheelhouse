@@ -6,19 +6,17 @@
   "scripts": {
     "test": "grunt test",
     "start": "node index.js",
-    "predeploy": "grunt preDeploy",
-    "postdeploy": "grunt postDeploy",
-    "server-start": "supervisor -w app -e 'js|json' .",
+    "server-start": "supervisor -w app -e 'js|json|hbs' index.js",
     "install-globals": "sudo npm i -g supervisor grunt-cli nave bower; bower install && npm install && brew install couchdb",
-    "code": "supervisor -x grunt -w Gruntfile.js -- code"
+    "code": "supervisor -x grunt -w Gruntfile.js -- code",
+    "predeploy": "grunt predeploy",
+    "postdeploy": "grunt postdeploy"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:joeybaker/wheelhouse.git"
   },
   "keywords": [
-    "impress.js",
-    "slideshow"
   ],
   "author": "Joey Baker",
   "license": "BSD",
@@ -27,9 +25,8 @@
     "grunt": "~0.4",
     "grunt-bumpx": "~0.1",
     "grunt-notify": "~0.2",
-    "grunt-contrib-jshint": "~0.4",
-    "grunt-contrib-livereload": "0.1",
-    "grunt-regarde": "~0.1",
+    "grunt-contrib-jshint": "~0.5",
+    "grunt-contrib-watch": "~0.4",
     "grunt-contrib-connect": "~0.2",
     "grunt-contrib-handlebars": "~0.5",
     "grunt-mocha": "~0.3",
@@ -44,7 +41,6 @@
     "grunt-contrib-less": "~0.5",
     "grunt-browserify2": "~0.1",
     "browserify-shim": "~2.0",
-    "nock": "~0.16",
     "request": "~2.16",
     "grunt-contrib-uglify": "~0.2"
   },
@@ -55,16 +51,16 @@
     "st": "~0.1",
     "lodash": "~1",
     "walker": "~1.0",
-    "cradle": "~0.6",
     "backbone": "~1.0",
     "underscore.string": "~2.3",
     "backbone-relational": "~0.8",
     "wheelhouse-couch": "~0.2",
     "wheelhouse-handlebars": "~0.2",
-    "wheelhouse-router": "~0.2"
+    "wheelhouse-router": "~0.3",
+    "cloudinary": "~1.0",
   },
-  "subdomain": "wheelhouse",
+  "subdomain": "uwn",
   "engines": {
-    "node": "0.8.x"
+    "node": "0.10.x"
   }
 }
