@@ -1,6 +1,7 @@
 module.exports = function(grunt){
   'use strict';
   var path = require('path')
+    , fs = require('fs')
     , folderMount = function folderMount(connect, point) {
       return connect.static(path.resolve(point))
     }
@@ -19,8 +20,8 @@ module.exports = function(grunt){
         'Gruntfile.js'
         , 'index.js'
         , 'app/**/*.js'
-        , 'testClient/**/*.js'
-        , '<%= regarde.clientJs.files %>'
+        , 'testServer/**/*.js'
+        , '<%= watch.clientJs.files %>'
         , '!<%= handlebars.compile.files[0].dest %>/**'
       ]
       , options: {
@@ -49,39 +50,60 @@ module.exports = function(grunt){
         entry: './assets/js/main.js'
         , debug: true
         , compile: './assets/_js/main.js'
-        // , expose: {
-        //   files: [{
-        //     cwd: './assets/js/'
-        //     , src: ['**/*.js']
-        //   }]
-        // }
+        , expose: {
+          files: [
+          {
+            cwd: './assets/js/'
+            , src: ['**/*.js']
+          }
+          , {
+            cwd: './app/collections/'
+            , src: ['**/*.js']
+          }
+          , {
+            cwd: './app/controllers/'
+            , src: ['**/*.js']
+          }
+          , {
+            cwd: './app/models/'
+            , src: ['**/*.js']
+          }
+          , {
+            cwd: './app/views/'
+            , src: ['**/*.js', '!**/_*.js']
+            , expand: true
+            , rename: function(dest, src){
+              console.log(dest, src)
+            }
+          }
+        ]}
         , beforeHook: function(bundle){
           var shim = require('browserify-shim')
 
           // make files nicer to require
           // anything in the JS dir
-          grunt.file.recurse('./assets/js/', function(abspath){
-            bundle.require(require.resolve(path.join(__dirname, abspath)), {expose: abspath.replace('assets/js/', '').replace('.js', '').replace('_', '')})
-          })
+          // grunt.file.recurse('./assets/js/', function(abspath){
+          //   if (/\.js$/.test(abspath)) bundle.require(require.resolve(path.join(__dirname, abspath)), {expose: abspath.replace('assets/js/', '').replace('.js', '').replace('_', '')})
+          // })
           // templates can be accessed via `templates/**`
           grunt.file.recurse('./assets/_js/templates/', function(abspath){
-            bundle.require(require.resolve(path.join(__dirname, abspath)), {expose: abspath.replace('assets/_js/', '').replace('.js', '')})
+            if (/\.js$/.test(abspath)) bundle.require(require.resolve(path.join(__dirname, abspath)), {expose: abspath.replace('assets/_js/', '').replace('.js', '')})
           })
           // controllers can be fetched via `controllers/**`
           // also, collections and models
           grunt.util._.each(['collections', 'controllers', 'models'], function(dir){
             grunt.file.recurse('./app/' + dir, function(abspath){
-              bundle.require(require.resolve(path.join(__dirname, abspath)), {expose: abspath.replace('app/', '').replace('.js', '')})
+              if (abspath.indexOf('api/') === -1 && /\.js$/.test(abspath)) bundle.require(require.resolve(path.join(__dirname, abspath)), {expose: abspath.replace('app/', '').replace('.js', '')})
             })
           })
           // views
           // remove underscores from the front, so that partials are nicer to require
           grunt.file.recurse('./app/views/', function(abspath){
-            bundle.require(require.resolve(path.join(__dirname, abspath)), {expose: abspath.replace('app/', '').replace('.js', '').replace('/_', '/')})
+            if (/\.js$/.test(abspath)) bundle.require(require.resolve(path.join(__dirname, abspath)), {expose: abspath.replace('app/', '').replace('.js', '').replace('/_', '/')})
           })
           // handlebars helpers built into wheelhouse-handlebars fetched via `helpers/**`
           grunt.file.recurse('./node_modules/wheelhouse-handlebars/lib/helpers/', function(abspath){
-            bundle.require(require.resolve(path.join(__dirname, abspath)), {expose: abspath.replace('node_modules/wheelhouse-handlebars/lib/', '').replace('.js', '')})
+            if (/\.js$/.test(abspath)) bundle.require(require.resolve(path.join(__dirname, abspath)), {expose: abspath.replace('node_modules/wheelhouse-handlebars/lib/', '').replace('.js', '')})
           })
 
           // we need to shim some libraries to get things playing nicely
@@ -95,7 +117,6 @@ module.exports = function(grunt){
             .require(require.resolve('./assets/components/lodash/dist/lodash.js'), {expose: 'underscore'})
             .require(require.resolve('./assets/components/jquery/jquery.js'), {expose: 'jquery'})
             .require(require.resolve('./assets/components/handlebars/handlebars.runtime.js'), {expose: 'handlebars'})
-
         }
       }
     }
@@ -132,47 +153,59 @@ module.exports = function(grunt){
         , src: '<%= bump.patch.src %>'
       }
     }
-    , regarde: {
-      less: {
+    , watch: {
+      options: {
+        livereload: true
+      }
+      , less: {
         files: ['assets/less/**/*.less']
         , tasks: ['less:dev']
       }
-      , css: {
-        files: ['assets/css**/**/*.css']
-        , tasks: ['logPageLoad', 'livereload']
-      }
       , serverJs: {
         files: ['index.js', 'app/**/*.js']
-        , tasks: ['jshint', 'browserify2:dev', 'logPageLoad', 'livereload']
+        , tasks: ['jshint', 'browserify2']
       }
       , clientJs: {
         files: '<%= config.assets.js %>/**/*.js'
-        , tasks: ['jshint', 'browserify2:dev', 'logPageLoad', 'livereload']
+        , tasks: ['jshint', 'browserify2']
       }
       , handlebars: {
         files: ['<%= handlebars.compile.files[0].cwd %><%= handlebars.compile.files[0].src[0] %>', 'app/handlebars/*.js']
-        , tasks: ['clean:handlebars', 'handlebars', 'browserify2:dev', 'logPageLoad', 'livereload']
+        , tasks: ['clean:handlebars', 'handlebars', 'browserify2']
       }
       , testServer: {
         files: '<%= simplemocha.all.src %>'
-        , tasks: ['logPageLoad', 'simplemocha', 'livereload']
+        , tasks: ['simplemocha']
       }
       , testClient: {
         files: ['testClient/**/*.js']
-        , tasks: ['mocha', 'logPageLoad', 'livereload']
+        , tasks: ['mocha']
       }
     }
     , connect: {
       docs: {
         options: {
-          port: '<%= config.port + 10000 %>'
+          port: '<%= config.port + 1 %>'
           , base: './assets/components/bootstrap/docs/_site'
           // , keepalive: true
           , middleware: function(connect, options){
             return [
+              // serve .html files
               function(req, res, next){
-                if (req.url === '/docs/') req.url = '/docs.html'
-                next()
+                if (req.url === '/' || /\.(css|js|ico)$/.test(req.url)) {
+                  next()
+                }
+                else if (fs.existsSync(path.join(__dirname, '/assets/components/bootstrap/docs/_site/', req.url))) {
+                  next()
+                }
+                else if (fs.existsSync(path.join(__dirname, '/assets/components/bootstrap/docs/_site/', req.url) + '.html')) {
+                  req.url = req.url + '.html'
+                  next()
+                }
+                else if (fs.existsSync(path.join(__dirname, '/assets/components/bootstrap/docs/_site/', req.url, '/index.html'))) {
+                  req.url = path.join(req.url, '/index.html')
+                  next()
+                }
               }
               , connect.static(options.base)
               , connect.directory(options.base)
@@ -182,7 +215,7 @@ module.exports = function(grunt){
       }
       , test: {
         options: {
-          port: '<%= config.port + 10001 %>'
+          port: '<%= config.port + 2 %>'
           // , keepalive: true
           , middleware: function(connect) {
             return [
@@ -356,23 +389,33 @@ module.exports = function(grunt){
         options: {
           node: true
           , namespace: 'A.Templates'
+          , partialRegex: /^__/
+          , processAST: function(ast) {
+            ast.statements.forEach(function(statement, i) {
+              if (statement.type === 'partial') {
+                ast.statements[i] = {type: 'content', string: ''}
+              }
+            })
+            return ast
+          }
           , processName: function(filename){
             return filename
               .replace(grunt.template.process('<%= handlebars.compile.files[0].cwd %>'), '')
               .replace(/\.hbs$/, '')
+              .replace('/_', '/')
           }
-          , processPartialName: function(filename){
-            var fileParts = filename.split('/')
-              , file = fileParts.pop()
-                .substr(1)
-                .replace(/\.hbs$/, '')
+          // , processPartialName: function(filename){
+          //   var fileParts = filename.split('/')
+          //     , file = fileParts.pop()
+          //       .substr(1)
+          //       .replace(/\.hbs$/, '')
 
-            fileParts.push(file)
+          //   fileParts.push(file)
 
-            return fileParts
-              .join('/')
-              .replace(grunt.template.process('<%= handlebars.compile.files[0].cwd %>'), '')
-          }
+          //   return fileParts
+          //     .join('/')
+          //     .replace(grunt.template.process('<%= handlebars.compile.files[0].cwd %>'), '')
+          // }
         }
         , files: [
           {
@@ -413,21 +456,33 @@ module.exports = function(grunt){
     }
   })
 
-  grunt.loadNpmTasks('grunt-contrib-livereload')
   grunt.loadNpmTasks('grunt-contrib-handlebars')
   grunt.loadNpmTasks('grunt-contrib-imagemin')
   grunt.loadNpmTasks('grunt-contrib-connect')
   grunt.loadNpmTasks('grunt-contrib-jshint')
   grunt.loadNpmTasks('grunt-contrib-uglify')
+  grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-contrib-less')
   grunt.loadNpmTasks('grunt-simple-mocha')
   grunt.loadNpmTasks('grunt-browserify2')
-  grunt.loadNpmTasks('grunt-regarde')
   grunt.loadNpmTasks('grunt-notify')
   grunt.loadNpmTasks('grunt-bumpx')
   grunt.loadNpmTasks('grunt-shell')
   grunt.loadNpmTasks('grunt-mocha')
+
+  // watch events
+  ;(function(){
+    var changedFiles = {}
+      , onChange = grunt.util._.debounce(function() {
+      grunt.config(['jshint', 'single'], Object.keys(changedFiles))
+      changedFiles = {}
+    }, 100)
+    grunt.event.on('watch', function(action, filepath) {
+      if (/\.js$/.test(filepath)) changedFiles[filepath] = action
+      onChange()
+    })
+  })()
 
   // setup the tasks
   grunt.registerTask('help', 'Show help', ['default'])
@@ -457,15 +512,14 @@ module.exports = function(grunt){
     , 'less:dev'
     , 'jshint'
     , 'handlebars'
-    , 'browserify2:dev'
-    , 'livereload-start'
+    , 'browserify2'
     , 'connect:test'
     , 'shell:bootstrapDocs'
     , 'connect:docs'
-    , 'regarde'
+    , 'watch'
   ])
   grunt.registerTask('test', ['simplemocha', 'connect:test', 'mocha'])
-  grunt.registerTask('preDeploy', [
+  grunt.registerTask('predeploy', [
     'shell:gitRequireCleanTree'
     , 'shell:gitCheckoutMaster'
     , 'shell:gitRequireCleanTree'
@@ -478,19 +532,16 @@ module.exports = function(grunt){
     , 'browserify2'
     , 'uglify'
     , 'shell:killallNode' // necessary to kill the watch tasks which are using ports we need to test
-    , 'connect:test'
-    , 'mocha'
+    // , 'connect:test'
+    // , 'mocha'
     , 'simplemocha'
     , 'bump:' + (grunt.option('version') || 'patch')
-    , 'shell:npmShrinkwrap'
+    // , 'shell:npmShrinkwrap'
     , 'shell:gitCommitDeployFiles'
     , 'shell:gitTag'
     // , 'shell:gitPush'
   ])
-  grunt.registerTask('postDeploy', ['browserify2', 'less:dev'])
-  grunt.registerTask('logPageLoad', 'log that a new page has been loaded', function(){
-    grunt.log.subhead('<<<<<<<<< page load >>>>>>>>>>'.green)
-  })
+  grunt.registerTask('postdeploy', ['browserify2', 'less:dev'])
   grunt.registerTask('docs', ['shell:bootstrapDocs', 'connect:docs'])
   // grunt.registerTask('publish', ['shell:gitRequireCleanTree', 'jshint', 'shell:npmTest', 'bump:patch', 'shell:gitCommitPackage', 'shell:gitTag', 'shell:gitPush', 'shell:npmPublish'])
 }
