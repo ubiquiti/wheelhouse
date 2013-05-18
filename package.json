@@ -57,7 +57,7 @@
     "wheelhouse-couch": "~0.2",
     "wheelhouse-handlebars": "~0.2",
     "wheelhouse-router": "~0.3",
-    "cloudinary": "~1.0",
+    "cloudinary": "~1.0"
   },
   "subdomain": "uwn",
   "engines": {
