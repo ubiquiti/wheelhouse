@@ -1,35 +1,37 @@
 'use strict';
 (function(){
   var $ = window.$ = require('../components/jquery/jquery.js')
-    , Backbone = window.Backbone = require('backbone')
+    // , Backbone = window.Backbone = require('backbone')
     , Router = require('./router.js')
     , _ = window._ = require('lodash')
+    , FastClick = require('../components/fastclick/lib/fastclick')
+
+
 
   // patch lodash for underscore compatibility; needed for backbone-relational
   _.findWhere = _.first
 
-  window.A = {
-    Views: {}
-    , Templates: {}
-    , Collections: {}
-    , Models: {}
-    , Datas: {}
-    , Renders: {}
-    , Router: new Router({
-      routesJSON: require('../../app/routes.json')
-      // , collections: '../../app/collections/'
-      // , views: '../../app/views/'
-      // , controllers: '../../app/controllers/'
-    })
-    , View: require('./overrides/view.js')
+  window.A = _.extend((window.A || {}), {
+    View: require('./overrides/view.js')
     , Model: require('./overrides/model.js')
     , $container: $('#main')
-    , init: function(){
-      if (Backbone.history.start({pushState: true})) A.Router.started = true
-    }
-  }
+  })
+
+  window.A.Router = new Router({
+    routesJSON: require('../../app/routes.json')
+    , collections: 'collections/'
+    , views: 'views/'
+    , controllers: 'controllers/'
+    , app: window.A
+    , pushState: true
+  })
+
+  window.A.Router.on('route', function(router, route){
+    console.log(route)
+  })
 
 
-  A.init()
+  ;new FastClick(document.body)
+
 })()
 

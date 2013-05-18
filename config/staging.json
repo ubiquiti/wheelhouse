@@ -1,7 +1,0 @@
-{
- "database": {
-    "host": ""
-    , "port": 6984
-    , "name": ""
-  }
-}
