@@ -1,6 +1,6 @@
 {
   "name": "wheelhouse",
-  "version": "0.0.6",
+  "version": "0.1.10",
   "main": [
     "./js/main.js"
   ],
@@ -14,11 +14,15 @@
   },
   "dependencies": {
     "typeplate": "latest",
-    "bootstrap": "latest",
+    "bootstrap": "git@github.com:twitter/bootstrap.git#53bc93282fbeab3c1b779f1914ab040290668369",
     "jquery": "~1.9",
     "lodash": "~1.0",
     "handlebars": "~1.0",
-    "html5-boilerplate": "~4"
+    "html5-boilerplate": "~4",
+    "fastclick": "~0.6.2",
+    "animate.less": "git@github.com:machito/animate.less.git",
+    "Flexbox.less": "git@github.com:ProLoser/Flexbox.less.git",
+    "font-awesome": "~3.0"
   },
   "devDependencies": {}
 }
